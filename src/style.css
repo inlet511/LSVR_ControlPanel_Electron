@@ -29,6 +29,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
 }
 
 h1 {
@@ -68,9 +73,16 @@ code {
 
 #app {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0;
+  /* padding: 2rem;*/
+  text-align: center; 
+  display: block;
+  position: static !important;
+  transform: none !important;
 }
 
 @media (prefers-color-scheme: light) {

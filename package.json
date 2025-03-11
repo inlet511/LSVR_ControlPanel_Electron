@@ -1,9 +1,9 @@
 {
-  "name": "electron-vue-vite",
+  "name": "LSVR_ControlPanel",
   "version": "28.1.0",
   "main": "dist-electron/main/index.js",
-  "description": "Really simple Electron + Vue + Vite boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "大空间VR控制面板",
+  "author": "Ken An",
   "license": "MIT",
   "private": true,
   "keywords": [
@@ -20,8 +20,8 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "dev": "chcp 65001 && vite",
+    "build": "chcp 65001 && vue-tsc --noEmit && vite build && electron-builder",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -34,5 +34,9 @@
     "vite-plugin-electron-renderer": "^0.14.5",
     "vue": "^3.4.21",
     "vue-tsc": "^2.0.6"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "yaml": "^2.7.0"
   }
 }

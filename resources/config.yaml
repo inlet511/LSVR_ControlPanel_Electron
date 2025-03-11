@@ -1,0 +1,9 @@
+games:
+  - gameId: 1
+    displayName: "太空大战"
+  - gameId: 2 
+    displayName: "迷宫寻宝"
+  - gameId: 3
+    displayName: "数字谜题"
+  - gameId: 4
+    displayName: "策略棋局"

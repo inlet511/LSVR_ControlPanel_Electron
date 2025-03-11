@@ -62,6 +62,24 @@ export default defineConfig(({ command }) => {
         renderer: {},
       }),
     ],
+    build:{
+      outDir:'dist',
+      rollupOptions:{
+        external:['electron'],
+        output:{
+          assetFileNames:(assetInfo)=>{
+            if(assetInfo.name){
+              const extType = assetInfo.name.split('.').at(1)
+              if(extType==='yaml')
+              {
+                return 'resources/[name].[ext]'
+              }
+            }
+            return 'assets/[name].[ext]'
+          }
+        }
+      }
+    },
     server: process.env.VSCODE_DEBUG && (() => {
       const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
       return {

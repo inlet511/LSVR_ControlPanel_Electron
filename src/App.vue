@@ -3,10 +3,14 @@
   <div>
       <h2>房间管理</h2>
       <div class="servers">
-          <div class="button-container">
-              <button @click="startServerGame(1)">开房间(游戏1)</button>
-              <button @click="startServerGame(2)">开房间(游戏2)</button>
-              <button @click="startServerGame(3)">开房间(游戏3)</button>
+          <div class="button-container">           
+
+              <GameButton 
+                v-for="game in games"
+                :key="game.gameId"
+                :config="game"
+                @game-start="startServerGame" />
+
           </div>
           <div class="server_container">
               <ServerBox v-for="server in servers" :key="server.roomID" :server="server"
@@ -16,7 +20,7 @@
 
       <hr />
 
-      <h2>VR设备控制</h2>
+      <h2>VR设备管理</h2>
       <div class="client_container">
           <ClientBox v-for="client in clients" :key="client.clientID" :client="client"
               :selected-room-id="selectedRoomID" @join="joinRoom" @quit="clientQuitGame" />
@@ -34,12 +38,23 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import ServerBox from './Components/ServerBox.vue';
 import ClientBox from './Components/ClientBox.vue';
+import GameButton from './components/GameButton.vue';
 
+const games = ref([]);
 const events = ref([]);
 const servers = ref([]);
 const clients = ref([]);
 const selectedRoomID = ref(null);
 let ws = null;
+
+const loadGames = async()=>{
+  try {
+    games.value = await window.electronAPI.getGames()
+  } catch (error) {
+    console.error('Failed to load games:', error)
+  }
+}
+
 
 // WebSocket处理
 const setupWebSocket = () => {
@@ -157,7 +172,10 @@ const sendCommand = (command, params, targetType = 'os', clientID = null) => {
   ws.send(JSON.stringify(message));
 };
 
-onMounted(setupWebSocket);
+onMounted(()=>{
+  setupWebSocket();
+  loadGames();
+});
 onBeforeUnmount(() => ws?.close());
 </script>
 
@@ -172,7 +190,7 @@ onBeforeUnmount(() => ws?.close());
 
 h2{
   padding:5px;
-  marging:0px;
+  margin:0px;
   margin-block-start: 0;
   margin-block-end:0;
 }
