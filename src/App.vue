@@ -108,6 +108,10 @@ const updateClient = (params) => {
   }
 };
 
+const removeClient = (clientID) =>{
+  clients.value = clients.value.filter(c => c.clientID !== clientID);
+}
+
 // 更新服务器列表
 const updateServer = (params) => {
   const index = servers.value.findIndex(s => s.roomID === params.roomID);
@@ -180,7 +184,6 @@ onBeforeUnmount(() => ws?.close());
 </script>
 
 <style scoped>
-/* 保留原有CSS样式 */
 .server_container,
 .client_container {
   display: grid;

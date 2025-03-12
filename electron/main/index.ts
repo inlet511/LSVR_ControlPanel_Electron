@@ -4,14 +4,13 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
 import { buildCustomMenu } from "./menu";
-import * as fs from "node:fs";
-import * as yaml from "js-yaml";
+import { loadGamesConfig } from "./config"
+
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "../..");
-console.log(process.env);
 
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
@@ -35,6 +34,7 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null;
 const preload = path.join(__dirname, "../preload/index.mjs");
 const indexHtml = path.join(RENDERER_DIST, "index.html");
+
 
 async function createWindow() {
 	win = new BrowserWindow({
@@ -74,44 +74,11 @@ async function createWindow() {
 	// win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-function getConfigPath() {
-	// 开发环境
-	if (import.meta.env.DEV === "development") {
-		return path.join(process.cwd(), "resources", "config.yaml");
-	}
-	// 生产环境
-	return path.join(process.resourcesPath, "config.yaml");
-}
 
-// 读取YAML文件
-function loadGamesConfig() {
-	const configPath = getConfigPath();
-	console.log("Current directory:", __dirname);
-	console.log("Attempting to read file at :", configPath);
-	try {
-		const configFile = fs.readFileSync(
-			path.join(__dirname, "config.yaml"),
-			"utf8"
-		);
-		const config = yaml.load(configFile);
-		return config.games;
-	} catch (e) {
-		console.error("Error reading games config:", e);
-		return [
-			{
-				gameId: 1,
-				displayName: "默认游戏",
-			},
-		];
-	}
-}
 
 app.whenReady().then(() => {
 	createWindow();
-
-	ipcMain.handle("get-games", async () => {
-		return loadGamesConfig();
-	});
+	ipcMain.handle("get-games", loadGamesConfig);
 });
 
 app.on("window-all-closed", () => {
