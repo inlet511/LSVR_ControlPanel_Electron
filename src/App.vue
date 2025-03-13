@@ -23,7 +23,7 @@
       <h2>VR设备管理</h2>
       <div class="client_container">
           <ClientBox v-for="client in clients" :key="client.clientID" :client="client"
-              :selected-room-id="selectedRoomID" @join="joinRoom" @quit="clientQuitGame" />
+              @join="joinRoom" @quit="clientQuitGame" />
       </div>
 
       <hr />

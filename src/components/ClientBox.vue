@@ -18,13 +18,13 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-    client: Object,
-    selectedRoomId: String
+    client: Object
 });
 
 const isGameConnected = computed(() =>
-    props.client.status === "game_connected"
+    props.client.status === "joined_game"
 );
+
 </script>
 
 <style scoped>
