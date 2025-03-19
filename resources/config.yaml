@@ -7,3 +7,9 @@ games:
     displayName: "数字谜题"
   - gameId: 4
     displayName: "策略棋局"
+
+# websocket 服务器IP地址
+webSocketServerIP: 127.0.0.1
+
+# websocket 服务器端口号
+webSocketServerPort: 7000

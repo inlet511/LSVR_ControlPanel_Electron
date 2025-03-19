@@ -6,7 +6,10 @@
             <p>游戏: {{ server.gameID }}</p>
             <p>端口: {{ server.serverPort }}</p>
             <p>状态: {{ server.status }}</p>
-            <button @click.stop="$emit('close', server.roomID)">关闭房间</button>
+            <div class="button-container">
+                <button @click.stop="$emit('start', server.roomID)">进行游戏</button>
+                <button @click.stop="$emit('close', server.roomID)">关闭房间</button>
+            </div>
         </div>
     </div>
 </template>

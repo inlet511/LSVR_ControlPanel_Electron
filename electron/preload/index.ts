@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 })
 
 contextBridge.exposeInMainWorld('electronAPI',{
-  getGames: ()=>ipcRenderer.invoke('get-games'),
+  loadConfig: ()=>ipcRenderer.invoke('loadConfig')
 });
 
 // --------- Preload scripts loading ---------

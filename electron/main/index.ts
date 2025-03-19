@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
 import { buildCustomMenu } from "./menu";
-import { loadGamesConfig } from "./config"
+import { loadConfig } from "./config"
 
 
 const require = createRequire(import.meta.url);
@@ -78,8 +78,10 @@ async function createWindow() {
 
 app.whenReady().then(() => {
 	createWindow();
-	ipcMain.handle("get-games", loadGamesConfig);
+	
+	ipcMain.handle("loadConfig", loadConfig);
 });
+
 
 app.on("window-all-closed", () => {
 	win = null;

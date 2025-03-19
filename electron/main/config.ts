@@ -12,7 +12,7 @@ function getConfigPath() {
 }
 
 // 读取YAML文件
-export function loadGamesConfig() {
+export function loadConfig() {
     const configPath = getConfigPath();
     try {
         const configFile = fs.readFileSync(
@@ -20,14 +20,9 @@ export function loadGamesConfig() {
             "utf8"
         );
         const config = yaml.load(configFile);
-        return config.games;
+        return config;
     } catch (e) {
-        console.error("Error reading games config:", e);
-        return [
-            {
-                gameId: 1,
-                displayName: "默认游戏",
-            },
-        ];
+        console.error("Error reading games config:", e);    
     }
 }
+
