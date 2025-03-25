@@ -8,7 +8,7 @@
                     v-for="game in games"
                     :key="game.gameId"
                     :config="game"
-                    @game-start="startServerGame"
+                    @game-start="startServerGame"                    
                 />
             </div>
             <div class="server_container">
@@ -34,6 +34,7 @@
                 :client="client"
                 @join="joinRoom"
                 @quit="clientQuitGame"
+                @labelSubmitted="handleLabelSubmit"
             />
         </div>
 
@@ -148,6 +149,7 @@ const handleFullUpdate = (params) => {
 
     clients.value = params.clients.map((c) => ({
         clientID: c[0],
+        progress: c[1].progress ?? 0,
         ...c[1],
     }));
 
@@ -159,47 +161,68 @@ const handleFullUpdate = (params) => {
 // 其他方法
 const append = (text) => events.value.push(text);
 const clearInfo = () => (events.value = []);
-const startServerGame = (gameID) => sendCommand("start_gameserver", { gameID });
+const startServerGame = (gameID) => sendCommand({type:"os"},"start_gameserver", { gameID });
 const selectRoom = (roomID) => (selectedRoomID.value = roomID);
 
+// 关闭房间
 const closeRoom = (roomID) => {
-    sendCommand("stop_gameserver", { roomID });
+    sendCommand({type:"os"},"stop_gameserver",{roomID});
     servers.value = servers.value.filter((s) => s.roomID !== roomID);
 };
 
-const starGame = (roomID)=>{
-  sendCommand("start_game",)
+// 开始游戏
+const startGame = (roomID)=>{
+  sendCommand(
+    {type:"gameserver",roomID},
+    "start_game",
+    {});
 }
 
+// 加入房间
 const joinRoom = (clientID) => {
     if (!selectedRoomID.value) return;
 
     const server = servers.value.find((s) => s.roomID === selectedRoomID.value);
     sendCommand(
+        {
+            type:"gameclient",
+            clientID
+        },
         "connect_to_server",
         {
-            clientID,
             roomID: selectedRoomID.value,
             gameID: server.gameID,
             serverPort: server.serverPort,
-        },
-        "gameclient",
+        },        
         clientID
     );
 };
 
-const clientQuitGame = (clientID) =>
-    sendCommand("quit_gameclient", {}, "gameclient", clientID);
+// 提交玩家姓名
+const handleLabelSubmit = (label, clientID) => {
+    sendCommand({type:"gameclient",clientID}, "set_client_label", { clientLabel:label });
+};
 
-const sendCommand = (command, params, targetType = "os", clientID = null) => {
+// 退出游戏
+const clientQuitGame = (clientID) =>
+    sendCommand({type:"gameclient",clientID},"quit_gameclient");
+
+/**
+ * 
+ * @param target 对象类型, {type:"os"|"gameserver"|"gameclient", [roomID]|[clientID]}
+ * @param command  命令
+ * @param params 命令参数
+ * @param clientID 
+ * @param roomID 
+ */
+const sendCommand = (target, command, params={}) => {
     const message = {
         message_type: "command",
-        target: { type: targetType },
+        target,
         command,
         command_params: params,
     };
 
-    if (clientID) message.target.clientID = clientID;
     ws.send(JSON.stringify(message));
 };
 

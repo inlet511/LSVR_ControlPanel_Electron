@@ -3,27 +3,49 @@
     <div class="clientbox">
         <div class="box-title">VR机 {{ client.clientID }}</div>
         <div class="inner-box">
-            <p class="status">状态:{{ client.status }}</p>
+            <p class="status">状态:{{ client.status }} &nbsp; 房间:{{ client.roomID }}</p>
             <div class="button-container">
                 <button :disabled="isGameConnected" @click="$emit('join', client.clientID)">加入房间</button>
                 <button :disabled="!isGameConnected" @click="$emit('quit', client.clientID)">退出游戏</button>
             </div>
-            <p>房间:{{ client.roomID }}</p>
+            <div class="input-container">
+                <input
+                    id="name-input"
+                    type="text"
+                    v-model="clientLabel"
+                    placeholder="输入玩家姓名"
+                    @keyup.enter="handleNameSubmit(client.clientID)"
+                />
+            </div>
             <progress :value="client.progress * 100" max="100"></progress>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
     client: Object
 });
 
+const emit = defineEmits(['labelSubmitted', 'join', 'quit']);
+
 const isGameConnected = computed(() =>
     props.client.status === "joined_game"
 );
+
+// 输入框绑定的变量
+const clientLabel = ref('');
+
+// 按下回车时触发的事件
+const handleNameSubmit = (clientID) => {
+    if (clientLabel.value.trim()) {
+        // 向上层组件 emit 事件，传递输入框的值
+        console.log('提交的名字:', clientLabel.value);
+        emit('labelSubmitted', clientLabel.value, clientID);
+    }
+};
 
 </script>
 
@@ -31,7 +53,7 @@ const isGameConnected = computed(() =>
 /* 保留原有clientbox样式 */
 .clientbox {
     color:black;
-    width: 200px;
+    width: 250px;
     height: 200px;
     padding: 10px;
     background-color: rgb(16, 105, 115);
